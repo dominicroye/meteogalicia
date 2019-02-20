@@ -62,7 +62,7 @@ str(idparametros)
 
 Lugo-Campus with maximum temperature (1.5m) in January 2019.
 
-```{r,warning=FALSE,message=FALSE,out.width="100%"}
+```{r,warning=FALSE,message=FALSE,out.width="100%",dpi=300}
 #downloading data
 data <- import_meteo_daily(10053,         #station id
                            "TA_MAX_1.5m", #variable id
@@ -80,7 +80,7 @@ ggplot(data,
 
 It is possible to query several stations or variables at the same time. However, the limit is set at 3 months for a single station and variable.
 
-```{r,warning=FALSE,message=FALSE,out.width="100%"}
+```{r,warning=FALSE,message=FALSE,out.width="100%",dpi=300}
 #downloading data
 data <- import_meteo_daily(c(10053,14000), #station id
                            "TA_MAX_1.5m",  #variable id
@@ -102,7 +102,7 @@ ggplot(data,
 
 ## Lightning strikes
 
-```{r,warning=FALSE,message=FALSE,out.width="100%"}
+```{r,warning=FALSE,message=FALSE,out.width="100%",dpi=300}
 #download lightning strikes
 data <- lightning_download("01/01/2019","31/01/2019")
 
