@@ -1,0 +1,133 @@
+---
+title: "Download functions for Meteogalicia"
+author: "Dominic Royé"
+date: "20/02/2019"
+output: rmarkdown::github_document
+---
+
+At this moment two functions are available to download data of the Galician Weather Service. 
+
+1) Lightning strike data.
+
+2) Daily meteorological variables.
+
+## Meteorological data
+
+```{r,warning=FALSE,message=FALSE}
+#install the libraries if necessary
+if(!require("tidyverse")) install.packages("tidyverse")
+if(!require("XML")) install.packages("XML")
+if(!require("jsonlite")) install.packages("jsonlite")
+if(!require("sf")) install.packages("sf")
+if(!require("rnaturalearth")) install.packages("rnaturalearth")
+
+
+#packages for functions
+library(tidyverse) #+plotting
+library(XML)
+library(jsonlite)
+
+#packages for plotting
+library(sf)
+library(rnaturalearth)
+
+#functions
+source("meteo_daily_download.R") #meteo download
+source("lightning_download.R") #lightning download
+
+#station details
+load("altabaja.RData")
+load("idestaciones.RData")
+load("idparametros.RData")
+
+```
+
+The following tables include important details about station ids, longitude, latitude, operative stations, available variables, etc. 
+
+```{r}
+#stations id + latlon + place
+str(idestaciones)
+
+#information about which stations are operative (FechAlta: from, FechaBaja: to)
+str(altabaja)
+
+#id_names for all available variables
+str(idparametros)
+
+```
+
+### Example 
+
+Lugo-Campus with maximum temperature (1.5m) in January 2019.
+
+```{r,warning=FALSE,message=FALSE,out.width="100%"}
+#downloading data
+data <- import_meteo_daily(10053,         #station id
+                           "TA_MAX_1.5m", #variable id
+                           "01/01/2019",  #date from
+                           "31/01/2019")  #date to 
+
+#data structure
+str(data)
+
+#plotting time serie
+ggplot(data,
+       aes(date,valor))+
+          geom_line()
+```
+
+It is possible to query several stations or variables at the same time. However, the limit is set at 3 months for a single station and variable.
+
+```{r,warning=FALSE,message=FALSE,out.width="100%"}
+#downloading data
+data <- import_meteo_daily(c(10053,14000), #station id
+                           "TA_MAX_1.5m",  #variable id
+                           "01/01/2019",   #date from
+                           "31/01/2019")   #date to 
+
+#data structure
+str(data)
+
+#plotting time serie
+ggplot(data,
+       aes(date,valor))+
+          geom_line()+
+        facet_grid(estacion~.)
+
+
+```
+
+
+## Lightning strikes
+
+```{r,warning=FALSE,message=FALSE,out.width="100%"}
+#download lightning strikes
+data <- lightning_download("01/01/2019","31/01/2019")
+
+#data structure
+str(data)
+
+#lonlat to numeric
+data <- mutate(data,lon=as.numeric(as.character(lon)),
+               lat=as.numeric(as.character(lat)))
+
+data_sf <- st_as_sf(data,coords=c("lon","lat"))%>%
+               st_set_crs(4326)
+
+map_bg <- ne_countries(scale=10,returnclass = "sf")
+
+#plotting
+     ggplot()+
+        geom_sf(data=map_bg,
+                fill="black",
+                colour="white",
+                size=0.2)+
+         geom_sf(data=data_sf,
+                 colour="#cb181d",
+                 alpha=0.5)+
+           coord_sf(xlim=c(-16,5),
+                    ylim=c(35,49))+
+            theme_minimal()
+
+
+```
