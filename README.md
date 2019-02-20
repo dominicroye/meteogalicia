@@ -3,11 +3,13 @@ Download functions for Meteogalicia
 Dominic Royé
 20/02/2019
 
-At this moment two functions are available to download data of the Galician Weather Service.
+At this moment two functions are available to download data of the [Galician Weather Service](https://www.meteogalicia.gal/web/index.action).
 
 1.  Lightning strike data.
 
 2.  Daily meteorological variables.
+
+For more RSS services have a look at this [page info](https://www.meteogalicia.gal/web/RSS/rssIndex.action?request_locale=gl).
 
 Meteorological data
 -------------------

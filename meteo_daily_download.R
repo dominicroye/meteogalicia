@@ -1,3 +1,11 @@
+##################################
+##################################
+# Download of lightning data     #
+# from Meteogalicia              #
+# Autor: Dominic Royé            #
+# Email: dominic.roye@gmail.com  #
+##################################
+##################################
 
 import_meteo_daily <- function(idest,idpar,date_from,date_to){
   
